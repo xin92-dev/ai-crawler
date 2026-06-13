@@ -179,6 +179,7 @@ async function runAll() {
       } catch (err) {
         console.log(chalk.red(`✗ [${role}] 分析失败: ${err.message}`));
       }
+      await new Promise(r => setTimeout(r, 60000)); // 每个角色间隔 60 秒
     }
   }
 
