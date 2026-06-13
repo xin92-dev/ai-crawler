@@ -11,6 +11,7 @@ const { fetchOpenAIBlog } = require('./src/crawlers/openai');
 const { save, readAll } = require('./src/storage/store');
 const { exportData } = require('./src/utils/export');
 const { analyzeArticles, listRoles } = require('./src/analysis/analyzer');
+const { sendEmails } = require('./src/email/sender');
 
 const SOURCES = {
   hackernews:     { fn: fetchHackerNews,     label: 'Hacker News' },
@@ -162,10 +163,33 @@ async function analyzeCmd(options) {
   }
 }
 
+async function runAll() {
+  await crawlAll([], { days: 1 });
+
+  const all = await require('./src/storage/store').readAll();
+  const since = Date.now() - 86400 * 1000;
+  const items = all
+    .filter(a => new Date(a.publishedAt).getTime() >= since)
+    .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+
+  if (items.length) {
+    for (const role of ['pm', 'developer', 'engineer', 'ops']) {
+      try {
+        await analyzeArticles(items, { days: 1, role });
+      } catch (err) {
+        console.log(chalk.red(`✗ [${role}] 分析失败: ${err.message}`));
+      }
+    }
+  }
+
+  console.log(chalk.bold('\n📧 发送邮件...\n'));
+  await sendEmails();
+}
+
 function scheduleJob(cronExpr) {
   console.log(chalk.bold(`\n⏰ Scheduler started (${cronExpr})\n`));
-  crawlAll([], { days: 1 });
-  cron.schedule(cronExpr, () => crawlAll([], { days: 1 }));
+  runAll();
+  cron.schedule(cronExpr, () => runAll());
 }
 
 const program = new Command();
@@ -208,8 +232,16 @@ program
   .action(analyzeCmd);
 
 program
+  .command('email')
+  .description('立即发送最新报告邮件给所有订阅者')
+  .action(async () => {
+    console.log(chalk.bold('\n📧 发送邮件...\n'));
+    await sendEmails();
+  });
+
+program
   .command('schedule [cron]')
-  .description('Run on a schedule (default: every 6 hours)')
-  .action((expr) => scheduleJob(expr || '0 */6 * * *'));
+  .description('Run on a schedule (default: every day at 8am)')
+  .action((expr) => scheduleJob(expr || '0 8 * * *'));
 
 program.parse();

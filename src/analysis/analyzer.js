@@ -219,13 +219,15 @@ const ROLES = {
 const providerConfig = PROVIDERS[PROVIDER];
 if (!providerConfig) throw new Error(`Unknown AI_PROVIDER: ${PROVIDER}`);
 
-const PROXY = process.env.http_proxy || process.env.https_proxy || 'http://127.0.0.1:7890';
-const proxyAgent = new HttpsProxyAgent(PROXY);
+const PROXY = process.env.http_proxy || process.env.https_proxy;
+const proxyAgent = PROXY ? new HttpsProxyAgent(PROXY) : null;
 
 const client = new OpenAI({
   baseURL: providerConfig.baseURL,
   apiKey: providerConfig.apiKey,
-  fetch: (url, init) => nodeFetch(url, { ...init, agent: proxyAgent }),
+  fetch: proxyAgent
+    ? (url, init) => nodeFetch(url, { ...init, agent: proxyAgent })
+    : undefined,
 });
 
 function buildArticleList(articles) {
