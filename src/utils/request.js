@@ -1,5 +1,13 @@
 const axios = require('axios');
 
+const proxyEnv = process.env.http_proxy || process.env.https_proxy;
+const proxyConfig = proxyEnv
+  ? (() => {
+      const u = new URL(proxyEnv);
+      return { host: u.hostname, port: Number(u.port), protocol: u.protocol.replace(':', '') };
+    })()
+  : false;
+
 const client = axios.create({
   timeout: 15000,
   headers: {
@@ -7,11 +15,7 @@ const client = axios.create({
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
   },
-  proxy: {
-    host: '127.0.0.1',
-    port: 7890,
-    protocol: 'http',
-  },
+  proxy: proxyConfig,
 });
 
 async function get(url, options = {}) {
