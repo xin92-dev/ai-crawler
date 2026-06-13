@@ -24,7 +24,7 @@
     "fs-extra": "^11.3.5",
     "groq-sdk": "^1.2.1",
     "https-proxy-agent": "^5.0.1",
-    "marked": "^18.0.5",
+    "marked": "^4.3.0",
     "node-cron": "^4.2.1",
     "node-fetch": "^2.7.0",
     "nodemailer": "^8.0.11",
