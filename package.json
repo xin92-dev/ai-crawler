@@ -1,0 +1,31 @@
+{
+  "name": "learning-crawler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "crawl": "node index.js crawl",
+    "list": "node index.js list",
+    "export": "node index.js export",
+    "schedule": "node index.js schedule",
+    "analyze": "node index.js analyze"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.100.1",
+    "axios": "^1.16.1",
+    "chalk": "^4.1.2",
+    "cheerio": "^1.0.0",
+    "commander": "^14.0.3",
+    "dayjs": "^1.11.20",
+    "dotenv": "^17.4.2",
+    "fs-extra": "^11.3.5",
+    "groq-sdk": "^1.2.1",
+    "https-proxy-agent": "^5.0.1",
+    "node-cron": "^4.2.1",
+    "node-fetch": "^2.7.0",
+    "openai": "^6.39.1"
+  }
+}
