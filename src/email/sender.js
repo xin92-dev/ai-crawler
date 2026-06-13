@@ -6,7 +6,7 @@ const dayjs = require('dayjs');
 const chalk = require('chalk');
 
 const RESULTS_DIR = path.resolve(__dirname, '../../../results');
-const SUBSCRIBERS_FILE = path.resolve(__dirname, '../../../subscribers.json');
+const SUBSCRIBERS_FILE = path.resolve(__dirname, '../../subscribers.json');
 
 const ROLE_NAMES = {
   pm: '产品经理',
