@@ -10,7 +10,12 @@
     "roles": ["ops"]
   },{
     "name": "通通",
-    "email": "jdy1223@163.com",
+    "email": "xqt_123@163.com",
     "roles": ["engineer"]
+  },
+  {
+    "name": "阿鸡",
+    "email": "jdy1223@163.com",
+    "roles": ["pm", "engineer"]
   }
 ]
