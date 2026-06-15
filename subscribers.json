@@ -2,6 +2,15 @@
   {
     "name": "张鑫",
     "email": "xin99033@gmail.com",
-    "roles": ["pm", "developer", "engineer", "ops"]
+    "roles": ["pm"]
+  },
+  {
+    "name": "王楷",
+    "email": "wking929528@gmail.com",
+    "roles": ["ops"]
+  },{
+    "name": "通通",
+    "email": "jdy1223@163.com",
+    "roles": ["engineer"]
   }
 ]
