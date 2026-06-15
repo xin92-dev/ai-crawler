@@ -12,10 +12,10 @@
       background: #0f1117;
       color: #e2e8f0;
       min-height: 100vh;
-      padding: 2rem 1rem;
+      padding: 2rem 1rem 4rem;
     }
 
-    .container { max-width: 900px; margin: 0 auto; }
+    .container { max-width: 960px; margin: 0 auto; }
 
     header {
       display: flex;
@@ -40,7 +40,7 @@
     .back-link:hover { background: #1a2a4a; border-color: #60a5fa; }
 
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       font-weight: 700;
       background: linear-gradient(135deg, #60a5fa, #a78bfa);
       -webkit-background-clip: text;
@@ -48,49 +48,422 @@
       background-clip: text;
     }
 
-    .image-container {
-      background: #1e2130;
-      border: 1px dashed #2d3348;
-      border-radius: 12px;
-      overflow: hidden;
-      min-height: 400px;
+    /* Section */
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #a78bfa;
+      letter-spacing: 0.04em;
+      margin-bottom: 1.2rem;
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 0.5rem;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, #2d2f4a, transparent);
+      margin-left: 0.5rem;
     }
 
-    .image-container img {
+    /* Architecture */
+    .arch-box {
+      background: #1a1c2e;
+      border: 1px solid #2a2d45;
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      color: #94a3b8;
+      line-height: 2;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .arch-box .hl { color: #60a5fa; }
+    .arch-box .hl2 { color: #34d399; }
+    .arch-box .hl3 { color: #f59e0b; }
+
+    /* Tech stack grid */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .stack-item {
+      background: #1a1c2e;
+      border: 1px solid #2a2d45;
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .stack-item .layer {
+      font-size: 0.7rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .stack-item .tech {
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+    .stack-item .detail {
+      font-size: 0.78rem;
+      color: #60a5fa;
+    }
+
+    /* AI concepts */
+    .concept-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .concept-item {
+      background: #1a1c2e;
+      border: 1px solid #2a2d45;
+      border-left: 3px solid #a78bfa;
+      border-radius: 0 8px 8px 0;
+      padding: 0.85rem 1.1rem;
+    }
+    .concept-item .name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #c4b5fd;
+      margin-bottom: 0.3rem;
+    }
+    .concept-item .desc {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+
+    /* Challenges */
+    .challenge-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .challenge-item {
+      background: #1a1c2e;
+      border: 1px solid #2a2d45;
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+    }
+    .challenge-item .ch-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      margin-bottom: 0.4rem;
+    }
+    .challenge-item .num {
+      background: #312e81;
+      color: #a5b4fc;
+      font-size: 0.7rem;
+      font-weight: 700;
+      border-radius: 4px;
+      padding: 0.15rem 0.4rem;
+      white-space: nowrap;
+      margin-top: 0.1rem;
+    }
+    .challenge-item .title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+    .challenge-item .body {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      line-height: 1.65;
+      padding-left: 2.2rem;
+    }
+    .challenge-item .solution {
+      margin-top: 0.4rem;
+      font-size: 0.8rem;
+      color: #34d399;
+      padding-left: 2.2rem;
+    }
+    .challenge-item .solution::before { content: '解法：'; font-weight: 600; }
+
+    /* Screenshots */
+    .screenshots {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 640px) {
+      .screenshots { grid-template-columns: 1fr; }
+    }
+
+    .screenshot-card {
+      background: #1a1c2e;
+      border: 1px solid #2a2d45;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .screenshot-card img {
       width: 100%;
-      height: auto;
       display: block;
+      object-fit: cover;
+    }
+    .screenshot-card .caption {
+      padding: 0.7rem 0.9rem;
+      font-size: 0.78rem;
+      color: #94a3b8;
+      border-top: 1px solid #2a2d45;
+      text-align: center;
+    }
+    .screenshot-card .caption strong {
+      display: block;
+      color: #cbd5e1;
+      margin-bottom: 0.15rem;
+      font-size: 0.82rem;
     }
 
-    .placeholder {
-      text-align: center;
-      color: #3b4a6b;
+    /* Highlights */
+    .highlights {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.8rem;
     }
-    .placeholder p { margin-top: 0.5rem; font-size: 0.85rem; }
+
+    .highlight-card {
+      background: linear-gradient(135deg, #1e1b4b 0%, #1a1c2e 100%);
+      border: 1px solid #312e81;
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      text-align: center;
+    }
+    .highlight-card .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .highlight-card .label {
+      font-size: 0.8rem;
+      color: #a5b4fc;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .highlight-card .value {
+      font-size: 0.78rem;
+      color: #64748b;
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
   <div class="container">
+
     <header>
       <a class="back-link" href="index.html">← 返回周报</a>
-      <h1>🔧 项目技术分析</h1>
+      <h1>项目技术分析</h1>
     </header>
 
-    <div class="image-container">
-      <!-- 将 img 标签替换到这里，例如：
-      <img src="your-image.png" alt="项目技术分析" />
-      -->
-      <div class="placeholder">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#3b4a6b" stroke-width="1.5">
-          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-          <polyline points="21 15 16 10 5 21"/>
-        </svg>
-        <p>在此处放置技术分析图片</p>
+    <!-- 项目亮点 -->
+    <div class="section">
+      <div class="section-title">项目亮点</div>
+      <div class="highlights">
+        <div class="highlight-card">
+          <div class="icon">⚡</div>
+          <div class="label">全自动链路</div>
+          <div class="value">爬取 → AI 分析 → 音频 → Web → 邮件，一条命令完成</div>
+        </div>
+        <div class="highlight-card">
+          <div class="icon">🎭</div>
+          <div class="label">多角色分析</div>
+          <div class="value">PM / 开发者 / 工程师 / 运营，同一资讯四种视角</div>
+        </div>
+        <div class="highlight-card">
+          <div class="icon">🔄</div>
+          <div class="label">三级 AI 降级</div>
+          <div class="value">GROQ → Gemini → Anthropic，任意服务商故障不影响输出</div>
+        </div>
+        <div class="highlight-card">
+          <div class="icon">💰</div>
+          <div class="label">极低成本</div>
+          <div class="value">分析用 GROQ 免费额度，整体月成本 &lt; $5</div>
+        </div>
       </div>
     </div>
+
+    <!-- 系统架构 -->
+    <div class="section">
+      <div class="section-title">系统架构</div>
+      <div class="arch-box"><span class="hl">[数据源]</span>  HackerNews · arXiv · Papers with Code · HuggingFace · OpenAI Blog
+    ↓
+<span class="hl">[爬虫层]</span>  Node.js + node-fetch + HttpsProxyAgent（穿透系统代理）
+    ↓
+<span class="hl">[存储层]</span>  本地 JSON（data/）
+    ↓
+<span class="hl2">[AI 分析引擎]</span>  GROQ llama-3.3-70b → Gemini 2.0 Flash → Anthropic Claude Haiku
+    ↓  Role-based Prompting（4 角色 × 专属 Prompt）
+<span class="hl">[Markdown 报告]</span>  results/analysis-{role}-{date}.md
+    ↓
+    ├── <span class="hl3">[Web 展示]</span>   build-web.js → data.json → index.html（marked.js 渲染）
+    │                  Express.js 静态服务 → EC2 + PM2 部署
+    │
+    ├── <span class="hl3">[音频播客]</span>  LLM 生成口语脚本 → AWS Polly Zhiyu 神经语音 → MP3
+    │
+    └── <span class="hl3">[邮件推送]</span>  AWS SES + Nodemailer → 按角色订阅推送</div>
+    </div>
+
+    <!-- 技术栈 -->
+    <div class="section">
+      <div class="section-title">技术栈</div>
+      <div class="stack-grid">
+        <div class="stack-item">
+          <span class="layer">运行时</span>
+          <span class="tech">Node.js 20</span>
+          <span class="detail">Commander.js · node-cron</span>
+        </div>
+        <div class="stack-item">
+          <span class="layer">AI 分析</span>
+          <span class="tech">GROQ · Gemini · Anthropic</span>
+          <span class="detail">llama-3.3-70b-versatile（主）</span>
+        </div>
+        <div class="stack-item">
+          <span class="layer">语音合成</span>
+          <span class="tech">AWS Polly</span>
+          <span class="detail">Zhiyu 中文神经语音 · MP3</span>
+        </div>
+        <div class="stack-item">
+          <span class="layer">邮件</span>
+          <span class="tech">AWS SES + Nodemailer</span>
+          <span class="detail">角色订阅 · HTML 模板</span>
+        </div>
+        <div class="stack-item">
+          <span class="layer">Web 服务</span>
+          <span class="tech">Express.js</span>
+          <span class="detail">静态托管 · marked.js 渲染</span>
+        </div>
+        <div class="stack-item">
+          <span class="layer">部署</span>
+          <span class="tech">AWS EC2 + PM2</span>
+          <span class="detail">Amazon Linux 2023 · systemd 自启</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI 技术与名词 -->
+    <div class="section">
+      <div class="section-title">AI 核心技术</div>
+      <div class="concept-list">
+        <div class="concept-item">
+          <div class="name">LLM（Large Language Model）大型语言模型</div>
+          <div class="desc">项目使用三个供应商：GROQ（llama-3.3-70b）、Google Gemini 2.0 Flash、Anthropic Claude Haiku。每日处理数百篇 AI 领域资讯，输出结构化分析报告。</div>
+        </div>
+        <div class="concept-item">
+          <div class="name">Prompt Engineering（提示词工程）</div>
+          <div class="desc">为 PM / 开发者 / 工程师 / 运营四种角色设计专属 System Prompt，引导 LLM 从不同视角提炼资讯价值。同一批内容产出四份差异化报告。</div>
+        </div>
+        <div class="concept-item">
+          <div class="name">Multi-provider Fallback Chain（多模型降级链）</div>
+          <div class="desc">GROQ 免费套餐每日 100k Token 上限，Anthropic 按量付费，Gemini 有每日请求配额。三者同时触碰限制时，系统自动切换：GROQ → Gemini → Anthropic，保障服务连续性。</div>
+        </div>
+        <div class="concept-item">
+          <div class="name">TTS（Text-to-Speech）+ AWS Polly 神经语音</div>
+          <div class="desc">LLM 将报告提炼为口语化播客脚本，再由 AWS Polly Zhiyu 中文神经语音（Neural Engine）合成 MP3。Neural 引擎基于深度学习，比传统 TTS 更接近真人语气。</div>
+        </div>
+        <div class="concept-item">
+          <div class="name">Token 配额管理</div>
+          <div class="desc">Token 是 LLM 的计量单位，约 1 个中文字 = 1.5~2 tokens。4 角色分析 × 多维度 = 12+ 次 API 调用，需严格控制每次请求的输入长度（每角色内容截断为 400 字符）以避免超限。</div>
+        </div>
+        <div class="concept-item">
+          <div class="name">OpenAI-Compatible API 统一接口</div>
+          <div class="desc">GROQ 和 Gemini 均提供兼容 OpenAI 格式的 API，项目用同一套 OpenAI SDK 接入不同供应商，只需切换 baseURL 和 apiKey，大幅降低多模型集成成本。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 技术难点 -->
+    <div class="section">
+      <div class="section-title">技术难点与解法</div>
+      <div class="challenge-list">
+        <div class="challenge-item">
+          <div class="ch-header">
+            <span class="num">难点 1</span>
+            <span class="title">Node.js 代理穿透</span>
+          </div>
+          <div class="body">系统需走本地 HTTPS 代理（127.0.0.1:7890）访问境外 AI API。Node.js 原生模块不自动读取系统代理，且环境变量大小写（HTTPS_PROXY vs https_proxy）不一致导致静默失败。</div>
+          <div class="solution">同时检测四种写法，通过 HttpsProxyAgent 手动注入所有 HTTP 客户端</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ch-header">
+            <span class="num">难点 2</span>
+            <span class="title">多供应商 Token 限流与降级</span>
+          </div>
+          <div class="body">三个 AI 供应商同时不可用：GROQ 100k/天耗尽、Anthropic 无余额（403）、Gemini 配额耗尽（429）。单靠任意一家无法保障稳定输出。</div>
+          <div class="solution">实现优先级降级链，Prompt 内容截断至 400 字/角色，控制单次 Token 消耗</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ch-header">
+            <span class="num">难点 3</span>
+            <span class="title">AWS Polly 中文语音合成</span>
+          </div>
+          <div class="body">需同时指定 Engine: 'neural'、LanguageCode: 'cmn-CN'、VoiceId: 'Zhiyu' 三个参数，缺少任一参数均会回退到非中文或标准音质引擎。</div>
+          <div class="solution">明确三参数组合，流式读取 AudioStream 并拼接 Buffer 写入 MP3</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ch-header">
+            <span class="num">难点 4</span>
+            <span class="title">静态 Web 预构建架构</span>
+          </div>
+          <div class="body">纯静态页面无法在运行时读取服务器文件。需将所有 results/*.md 预先聚合，计算 ISO 周标签（上上上周/上上周/本周），再输出为 data.json 供前端加载。</div>
+          <div class="solution">build-web.js 预构建脚本，基于周一为起点计算周次相对标签</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ch-header">
+            <span class="num">难点 5</span>
+            <span class="title">EC2 进程持久化</span>
+          </div>
+          <div class="body">SSH 断开后，nohup 启动的 Node.js 进程随会话终止，导致服务不可访问。需要与 SSH 会话生命周期解耦的守护方式。</div>
+          <div class="solution">PM2 进程管理器 + pm2 startup systemd，实现开机自启与进程守护</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ch-header">
+            <span class="num">难点 6</span>
+            <span class="title">AWS SES 沙箱限制</span>
+          </div>
+          <div class="body">SES 沙箱模式下，所有收件人邮箱必须单独在控制台完成验证，否则返回 554 错误。163.com 邮箱需用户手动点击验证链接。</div>
+          <div class="solution">在 SES 控制台（ap-northeast-3）逐一添加并验证收件人邮箱</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 实际效果截图 -->
+    <div class="section">
+      <div class="section-title">实际效果 — 邮件推送截图</div>
+      <div class="screenshots">
+        <div class="screenshot-card">
+          <img src="img/IMG_6532.PNG" alt="张鑫收到的 Gmail 邮件" />
+          <div class="caption">
+            <strong>张鑫（产品经理）</strong>
+            Gmail · AI 资讯周报 2026-06-15
+          </div>
+        </div>
+        <div class="screenshot-card">
+          <img src="img/25.JPG" alt="阿鸡收到的 163 邮件" />
+          <div class="caption">
+            <strong>阿鸡（PM + 开发者）</strong>
+            163.com · 收到双角色报告
+          </div>
+        </div>
+        <div class="screenshot-card">
+          <img src="img/16.JPG" alt="通通收到的 163 邮件" />
+          <div class="caption">
+            <strong>通通（开发者）</strong>
+            163.com · 工程师视角报告
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </body>
 </html>
