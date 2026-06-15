@@ -7,15 +7,15 @@
   {
     "name": "王楷",
     "email": "wking929528@gmail.com",
-    "roles": ["ops"]
+    "roles": ["engineer"]
   },{
     "name": "通通",
     "email": "xqt_123@163.com",
-    "roles": ["engineer"]
+    "roles": ["developer"]
   },
   {
     "name": "阿鸡",
     "email": "jdy1223@163.com",
-    "roles": ["pm", "engineer"]
+    "roles": ["pm", "developer"]
   }
 ]
