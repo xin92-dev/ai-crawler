@@ -1,3 +1,4 @@
+const Anthropic = require('@anthropic-ai/sdk');
 const OpenAI = require('openai');
 const { HttpsProxyAgent } = require('https-proxy-agent/dist/index');
 const nodeFetch = require('node-fetch');
@@ -12,6 +13,17 @@ const AUDIO_DIR = path.resolve(__dirname, '../../results/audio');
 
 const PROXY = process.env.http_proxy || process.env.https_proxy || process.env.HTTP_PROXY || process.env.HTTPS_PROXY;
 const proxyAgent = PROXY ? new HttpsProxyAgent(PROXY) : null;
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  ...(proxyAgent && { httpAgent: proxyAgent }),
+});
+
+const geminiClient = new OpenAI({
+  baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai',
+  apiKey: process.env.GEMINI_API_KEY,
+  fetch: proxyAgent ? (url, init) => nodeFetch(url, { ...init, agent: proxyAgent }) : undefined,
+});
 
 const groqClient = new OpenAI({
   baseURL: 'https://api.groq.com/openai/v1',
@@ -32,7 +44,7 @@ function getPollyClient() {
 
 async function generateScript(markdownContents, rangeLabel) {
   const combined = markdownContents
-    .map(({ role, content }) => `=== ${role} ===\n${content.slice(0, 2000)}`)
+    .map(({ role, content }) => `=== ${role} ===\n${content.slice(0, 800)}`)
     .join('\n\n');
 
   const prompt =
@@ -44,13 +56,22 @@ async function generateScript(markdownContents, rangeLabel) {
     `3. 语言口语化，像真实播客一样自然流畅，避免列表格式\n` +
     `4. 只输出脚本正文，不要标题或备注`;
 
-  const res = await groqClient.chat.completions.create({
-    model: 'llama-3.3-70b-versatile',
-    max_tokens: 1500,
-    messages: [{ role: 'user', content: prompt }],
-  });
+  const providers = [
+    { name: 'GROQ',      call: () => groqClient.chat.completions.create({ model: 'llama-3.3-70b-versatile', max_tokens: 1500, messages: [{ role: 'user', content: prompt }] }).then(r => r.choices[0].message.content.trim()) },
+    { name: 'Gemini',    call: () => geminiClient.chat.completions.create({ model: 'gemini-2.0-flash', max_tokens: 1500, messages: [{ role: 'user', content: prompt }] }).then(r => r.choices[0].message.content.trim()) },
+    { name: 'Anthropic', call: () => anthropic.messages.create({ model: 'claude-haiku-4-5-20251001', max_tokens: 1500, messages: [{ role: 'user', content: prompt }] }).then(r => r.content[0].text.trim()) },
+  ];
 
-  return res.choices[0].message.content.trim();
+  for (const p of providers) {
+    try {
+      const text = await p.call();
+      console.log(chalk.gray(`  [脚本引擎: ${p.name}]`));
+      return text;
+    } catch (e) {
+      console.log(chalk.yellow(`  ${p.name} 不可用，切换下一个... (${e.message.slice(0, 60)})`));
+    }
+  }
+  throw new Error('所有脚本生成引擎均不可用');
 }
 
 async function synthesizeSpeech(script, outFile) {
