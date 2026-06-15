@@ -44,7 +44,7 @@ function getPollyClient() {
 
 async function generateScript(markdownContents, rangeLabel) {
   const combined = markdownContents
-    .map(({ role, content }) => `=== ${role} ===\n${content.slice(0, 800)}`)
+    .map(({ role, content }) => `=== ${role} ===\n${content.slice(0, 400)}`)
     .join('\n\n');
 
   const prompt =

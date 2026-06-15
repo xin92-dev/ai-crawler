@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T13:25:48.065Z",
+  "generatedAt": "2026-06-15T14:14:16.035Z",
   "weeks": [
     {
       "date": "2026-05-31",
@@ -48,7 +48,7 @@
     {
       "date": "2026-06-15",
       "label": "本周",
-      "audioFile": null,
+      "audioFile": "audio/audio-2026-06-15.mp3",
       "roles": [
         {
           "key": "pm",
