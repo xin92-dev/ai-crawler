@@ -6,7 +6,7 @@ const path = require('path');
 const dayjs = require('dayjs');
 const chalk = require('chalk');
 
-const RESULTS_DIR = path.resolve(__dirname, '../../../results');
+const RESULTS_DIR = path.resolve(__dirname, '../../results');
 
 const PROVIDER = process.env.AI_PROVIDER || 'groq';
 
@@ -219,7 +219,7 @@ const ROLES = {
 const providerConfig = PROVIDERS[PROVIDER];
 if (!providerConfig) throw new Error(`Unknown AI_PROVIDER: ${PROVIDER}`);
 
-const PROXY = process.env.http_proxy || process.env.https_proxy;
+const PROXY = process.env.http_proxy || process.env.https_proxy || process.env.HTTP_PROXY || process.env.HTTPS_PROXY;
 const proxyAgent = PROXY ? new HttpsProxyAgent(PROXY) : null;
 
 const client = new OpenAI({
@@ -269,8 +269,8 @@ async function analyzeArticles(articles, options = {}) {
     throw new Error(`Unknown role "${roleKey}". Valid roles: ${valid}`);
   }
 
-  const date = dayjs().format('YYYY-MM-DD');
-  const dayRange = options.days ? `最近 ${options.days} 天` : '今日';
+  const date = options.to ? dayjs(options.to).format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD');
+  const dayRange = options.rangeLabel || (options.days ? `最近 ${options.days} 天` : '今日');
   const meta = { total: articles.length, range: dayRange };
   const articleList = buildArticleList(articles);
 

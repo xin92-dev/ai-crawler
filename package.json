@@ -8,13 +8,16 @@
     "list": "node index.js list",
     "export": "node index.js export",
     "schedule": "node index.js schedule",
-    "analyze": "node index.js analyze"
+    "analyze": "node index.js analyze",
+    "audio": "node index.js audio",
+    "build-web": "node scripts/build-web.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.1",
+    "@aws-sdk/client-polly": "^3.1068.0",
     "axios": "^1.16.1",
     "chalk": "^4.1.2",
     "cheerio": "^1.0.0",

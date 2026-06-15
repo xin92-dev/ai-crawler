@@ -12,6 +12,7 @@ const { save, readAll } = require('./src/storage/store');
 const { exportData } = require('./src/utils/export');
 const { analyzeArticles, listRoles } = require('./src/analysis/analyzer');
 const { sendEmails } = require('./src/email/sender');
+const { generateAudio } = require('./src/audio/generator');
 
 const SOURCES = {
   hackernews:     { fn: fetchHackerNews,     label: 'Hacker News' },
@@ -137,7 +138,15 @@ async function analyzeCmd(options) {
   if (options.source) {
     items = items.filter(a => a.source.toLowerCase().includes(options.source.toLowerCase()));
   }
-  if (options.days) {
+  if (options.from) {
+    const from = new Date(options.from).getTime();
+    items = items.filter(a => new Date(a.publishedAt).getTime() >= from);
+  }
+  if (options.to) {
+    const to = new Date(options.to).getTime() + 86400 * 1000;
+    items = items.filter(a => new Date(a.publishedAt).getTime() < to);
+  }
+  if (!options.from && !options.to && options.days) {
     const since = Date.now() - Number(options.days) * 86400 * 1000;
     items = items.filter(a => new Date(a.publishedAt).getTime() >= since);
   }
@@ -150,10 +159,11 @@ async function analyzeCmd(options) {
   }
 
   const roles = options.role ? options.role.split(',').map(r => r.trim()) : ['pm'];
+  const rangeLabel = options.from ? `${options.from} ~ ${options.to || '今天'}` : options.days ? `最近 ${options.days} 天` : '全部';
 
   for (const role of roles) {
     try {
-      const outFile = await analyzeArticles(items, { days: options.days, role });
+      const outFile = await analyzeArticles(items, { days: options.days, from: options.from, to: options.to, rangeLabel, role });
       console.log(chalk.bold(`\n✅ 分析完成:\n`));
       console.log(chalk.blue('  ' + outFile));
       console.log();
@@ -229,8 +239,31 @@ program
   .option('-r, --role <roles>', '角色（逗号分隔多个）: pm,engineer,ops,developer', 'pm')
   .option('-s, --source <name>', '按来源筛选')
   .option('-d, --days <n>', '最近 N 天的文章')
+  .option('--from <date>', '起始日期，格式 YYYY-MM-DD')
+  .option('--to <date>', '截止日期，格式 YYYY-MM-DD')
   .option('-l, --list-roles', '列出所有可用角色')
   .action(analyzeCmd);
+
+program
+  .command('audio <date>')
+  .description('为指定日期的报告生成播客音频，date 格式 YYYY-MM-DD（对应 results/analysis-*-DATE.md）')
+  .action(async (date) => {
+    try {
+      await generateAudio(date);
+    } catch (err) {
+      console.log(chalk.red(`\n✗ 音频生成失败: ${err.message}`));
+      process.exit(1);
+    }
+  });
+
+program
+  .command('build-web')
+  .description('根据 results/ 下的报告生成 web/data.json，用于静态站点部署')
+  .action(async () => {
+    const { execSync } = require('child_process');
+    console.log(chalk.bold('\n🌐 构建 Web 数据...\n'));
+    execSync('node scripts/build-web.js', { stdio: 'inherit' });
+  });
 
 program
   .command('email')

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 资讯周报</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.4rem;
+    }
+    header p { color: #64748b; font-size: 0.9rem; }
+
+    /* Week accordion */
+    .week-list { display: flex; flex-direction: column; gap: 1rem; }
+
+    .week-item {
+      background: #1e2130;
+      border: 1px solid #2d3348;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .week-item.open { border-color: #3b4a6b; }
+
+    .week-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 1.4rem;
+      cursor: pointer;
+      user-select: none;
+      gap: 1rem;
+    }
+    .week-header:hover { background: #252840; }
+
+    .week-title { display: flex; align-items: center; gap: 0.75rem; }
+    .week-label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+    .week-date {
+      font-size: 0.8rem;
+      color: #64748b;
+      background: #2d3348;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+    }
+
+    .week-right { display: flex; align-items: center; gap: 0.75rem; }
+
+    .audio-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #1d4ed8;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .audio-btn:hover { background: #2563eb; }
+    .audio-btn.playing { background: #7c3aed; }
+
+    .chevron {
+      color: #64748b;
+      transition: transform 0.25s;
+      flex-shrink: 0;
+    }
+    .week-item.open .chevron { transform: rotate(180deg); }
+
+    .week-body {
+      display: none;
+      padding: 0 1.4rem 1.4rem;
+    }
+    .week-item.open .week-body { display: block; }
+
+    /* Audio player bar */
+    .audio-player {
+      background: #141625;
+      border: 1px solid #2d3348;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .audio-player audio { width: 100%; height: 36px; }
+    .audio-player audio::-webkit-media-controls-panel { background: #1e2130; }
+
+    /* Role tabs */
+    .role-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+
+    .role-tab {
+      background: #252840;
+      border: 1px solid #2d3348;
+      color: #94a3b8;
+      border-radius: 6px;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .role-tab:hover { border-color: #60a5fa; color: #e2e8f0; }
+    .role-tab.active {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+      color: #fff;
+    }
+
+    /* Markdown content */
+    .role-content { display: none; }
+    .role-content.active { display: block; }
+
+    .markdown-body {
+      background: #141625;
+      border: 1px solid #2d3348;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: #cbd5e1;
+    }
+    .markdown-body h1, .markdown-body h2 {
+      color: #e2e8f0;
+      margin: 1.25rem 0 0.6rem;
+      font-weight: 600;
+    }
+    .markdown-body h1 { font-size: 1.25rem; border-bottom: 1px solid #2d3348; padding-bottom: 0.4rem; }
+    .markdown-body h2 { font-size: 1.05rem; }
+    .markdown-body h3 { font-size: 0.95rem; color: #93c5fd; margin: 1rem 0 0.4rem; }
+    .markdown-body p { margin: 0.5rem 0; }
+    .markdown-body ul, .markdown-body ol {
+      padding-left: 1.5rem;
+      margin: 0.5rem 0;
+    }
+    .markdown-body li { margin: 0.3rem 0; }
+    .markdown-body strong { color: #e2e8f0; }
+    .markdown-body code {
+      background: #252840;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.85em;
+      color: #a78bfa;
+    }
+    .markdown-body pre {
+      background: #252840;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 0.75rem 0;
+    }
+    .markdown-body pre code { background: none; padding: 0; color: #e2e8f0; }
+    .markdown-body blockquote {
+      border-left: 3px solid #3b82f6;
+      padding-left: 1rem;
+      color: #94a3b8;
+      margin: 0.5rem 0;
+    }
+    .markdown-body table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.85rem; }
+    .markdown-body th {
+      background: #252840;
+      color: #e2e8f0;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+      border: 1px solid #2d3348;
+    }
+    .markdown-body td {
+      padding: 0.45rem 0.75rem;
+      border: 1px solid #2d3348;
+      vertical-align: top;
+    }
+    .markdown-body hr { border: none; border-top: 1px solid #2d3348; margin: 1rem 0; }
+
+    .empty { text-align: center; color: #64748b; padding: 3rem; }
+    .loading { text-align: center; color: #64748b; padding: 3rem; }
+
+    .generated-at {
+      text-align: center;
+      color: #3b4a6b;
+      font-size: 0.75rem;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🤖 AI 资讯周报</h1>
+      <p>每周 AI / ML 动态 · 多角色视角分析</p>
+    </header>
+
+    <div id="app">
+      <div class="loading">加载中...</div>
+    </div>
+    <div class="generated-at" id="generated-at"></div>
+  </div>
+
+  <script>
+    marked.setOptions({ breaks: true, gfm: true });
+
+    let currentAudio = null;
+    let currentAudioBtn = null;
+
+    function playAudio(src, btn) {
+      if (currentAudio && !currentAudio.paused) {
+        currentAudio.pause();
+        if (currentAudioBtn) {
+          currentAudioBtn.textContent = '▶ 收听音频';
+          currentAudioBtn.classList.remove('playing');
+        }
+        if (currentAudioBtn === btn) { currentAudio = null; currentAudioBtn = null; return; }
+      }
+      const audio = new Audio(src);
+      audio.play();
+      currentAudio = audio;
+      currentAudioBtn = btn;
+      btn.textContent = '⏸ 暂停';
+      btn.classList.add('playing');
+      audio.onended = () => { btn.textContent = '▶ 收听音频'; btn.classList.remove('playing'); };
+      audio.onerror = () => { btn.textContent = '⚠ 加载失败'; };
+    }
+
+    function renderWeek(week, index) {
+      const isFirst = index === 0;
+
+      const audioBtnHtml = week.audioFile
+        ? `<button class="audio-btn" data-src="${week.audioFile}">▶ 收听音频</button>`
+        : '';
+
+      const tabsHtml = week.roles.map((r, i) =>
+        `<button class="role-tab ${i === 0 ? 'active' : ''}" data-role="${r.key}">${r.emoji} ${r.name}</button>`
+      ).join('');
+
+      const contentsHtml = week.roles.map((r, i) =>
+        `<div class="role-content ${i === 0 ? 'active' : ''}" data-role="${r.key}">
+          <div class="markdown-body">${marked.parse(r.content)}</div>
+        </div>`
+      ).join('');
+
+      const audioPlayerHtml = week.audioFile
+        ? `<div class="audio-player" style="display:none" id="player-${index}">
+            <audio controls src="${week.audioFile}" preload="none"></audio>
+           </div>`
+        : '';
+
+      return `
+        <div class="week-item ${isFirst ? 'open' : ''}" id="week-${index}">
+          <div class="week-header">
+            <div class="week-title">
+              <span class="week-label">${week.label}</span>
+              <span class="week-date">${week.date}</span>
+            </div>
+            <div class="week-right">
+              ${audioBtnHtml}
+              <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </div>
+          </div>
+          <div class="week-body">
+            ${audioPlayerHtml}
+            <div class="role-tabs">${tabsHtml}</div>
+            ${contentsHtml}
+          </div>
+        </div>`;
+    }
+
+    function bindEvents() {
+      // accordion toggle
+      document.querySelectorAll('.week-header').forEach(header => {
+        header.addEventListener('click', e => {
+          if (e.target.closest('.audio-btn')) return;
+          const item = header.closest('.week-item');
+          item.classList.toggle('open');
+        });
+      });
+
+      // role tabs
+      document.querySelectorAll('.role-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const body = tab.closest('.week-body');
+          body.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+          body.querySelectorAll('.role-content').forEach(c => c.classList.remove('active'));
+          tab.classList.add('active');
+          body.querySelector(`.role-content[data-role="${tab.dataset.role}"]`).classList.add('active');
+        });
+      });
+
+      // audio buttons
+      document.querySelectorAll('.audio-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const item = btn.closest('.week-item');
+          const index = item.id.replace('week-', '');
+          const player = document.getElementById(`player-${index}`);
+
+          if (!item.classList.contains('open')) item.classList.add('open');
+
+          if (player) {
+            const isVisible = player.style.display !== 'none';
+            player.style.display = isVisible ? 'none' : 'block';
+            btn.textContent = isVisible ? '▶ 收听音频' : '⏸ 关闭播放器';
+          } else {
+            playAudio(btn.dataset.src, btn);
+          }
+        });
+      });
+    }
+
+    async function init() {
+      const app = document.getElementById('app');
+      try {
+        const res = await fetch('data.json');
+        if (!res.ok) throw new Error('data.json 未找到，请先运行 npm run build-web');
+        const data = await res.json();
+
+        if (!data.weeks || !data.weeks.length) {
+          app.innerHTML = '<div class="empty">暂无报告数据</div>';
+          return;
+        }
+
+        // show most recent first
+        const weeks = [...data.weeks].reverse();
+        app.innerHTML = `<div class="week-list">${weeks.map((w, i) => renderWeek(w, i)).join('')}</div>`;
+        bindEvents();
+
+        if (data.generatedAt) {
+          document.getElementById('generated-at').textContent =
+            '数据生成于 ' + new Date(data.generatedAt).toLocaleString('zh-CN');
+        }
+      } catch (err) {
+        app.innerHTML = `<div class="empty">⚠ ${err.message}</div>`;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
